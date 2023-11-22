@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cgn-pytorch"
-version = "0.4.0"
+version = "0.4.1"
 description = "Pytorch implementation of Contact Graspnet"
 authors = ["Sebastian Peralta <peraltas@seas.upenn.edu>"]
 license = "MIT"

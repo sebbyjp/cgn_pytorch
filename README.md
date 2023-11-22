@@ -14,7 +14,7 @@ https://github.com/alinasarmiento/pytorch_contactnet. Original Tensorflow implem
 
 ## Run The Demo
 ### Clone this Repo
-`git clone  https://github.com/sebbyjp/cgn_pytorch`
+`git clone  https://github.com/sebbyjp/cgn_pytorch.git`
 
 ### Install Dependencies
 `pip3 install -r requirements.txt`
