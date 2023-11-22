@@ -1,0 +1,79 @@
+[tool.poetry]
+name = "cgn-pytorch"
+version = "0.4.0"
+description = "Pytorch implementation of Contact Graspnet"
+authors = ["Sebastian Peralta <peraltas@seas.upenn.edu>"]
+license = "MIT"
+readme = "README.md"
+
+keywords = ["artificial intelligence", "deep learning", "grasping", "robotics", "contact grasp net"]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.9"
+]
+
+packages = [
+    { include = "cgn_pytorch" },
+    { include = "cgn_pytorch/**/*.py" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+asttokens = "2.4.1"
+certifi = "2023.11.17"
+charset-normalizer = "3.3.2"
+decorator = "5.1.1"
+exceptiongroup = "1.2.0"
+executing = "2.0.1"
+filelock = "3.13.1"
+fsspec = "2023.10.0"
+idna = "3.4"
+importlib-resources = "6.1.1"
+ipython = "8.17.2"
+jedi = "0.19.1"
+jinja2 = "3.1.2"
+joblib = "1.3.2"
+markupsafe = "2.1.3"
+matplotlib-inline = "0.1.6"
+meshcat = "0.3.2"
+mpmath = "1.3.0"
+networkx = "3.2.1"
+numpy = "1.26.2"
+parso = "0.8.3"
+pexpect = "4.8.0"
+pillow = "10.1.0"
+prompt-toolkit = "3.0.41"
+psutil = "5.9.6"
+ptyprocess = "0.7.0"
+pure-eval = "0.2.2"
+pygments = "2.17.2"
+pyngrok = "7.0.1"
+pyparsing = "3.1.1"
+pyyaml = "6.0.1"
+pyzmq = "25.1.1"
+requests = "2.31.0"
+scikit-learn = "1.3.2"
+scipy = "1.11.4"
+six = "1.16.0"
+stack-data = "0.6.3"
+sympy = "1.12"
+threadpoolctl = "3.2.0"
+torch = "2.1.1"
+torch-geometric = "2.4.0"
+tornado = "6.3.3"
+tqdm = "4.66.1"
+traitlets = "5.13.0"
+trimesh = "4.0.4"
+typeguard = "4.1.5"
+typing-extensions = "4.8.0"
+u-msgpack-python = "2.8.0"
+urllib3 = "2.1.0"
+wcwidth = "0.2.12"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

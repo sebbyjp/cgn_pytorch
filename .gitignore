@@ -1,0 +1,10 @@
+*~
+*.npy
+*.obj
+*.csail.mit.edu
+!panda_gripper.obj
+!panda.npy
+*.pyc
+**/*/__pycache__/**/*
+**/*/dist/*/*
+*.swp
