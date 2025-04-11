@@ -188,8 +188,8 @@ class PandaGripper(object):
 
 
 def create_gripper(
-    name: str, configuration: list[float] = None, mesh_folder: str = MESH_DIR
-):
+    name: str, configuration: list[float]|None = None, mesh_folder: str = MESH_DIR
+) -> PandaGripper:
     """Create a gripper object.
     Arguments:
         name {str} -- name of the gripper

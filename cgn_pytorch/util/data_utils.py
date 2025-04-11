@@ -1,5 +1,4 @@
 import os
-import sys
 import glob
 import numpy as np
 from scipy.spatial import KDTree, cKDTree
@@ -7,12 +6,9 @@ from cgn_pytorch.util.scene_renderer import SceneRenderer
 import trimesh.transformations as tra
 import copy
 import torch
-import imageio
-from scipy.spatial.transform import Rotation as R
-import copy
-from IPython import embed
 from scipy import spatial
-from cgn_pytorch.util.test_meshcat_pcd import viz_pcd as V
+
+from mbodios.types.sense.image import Image
 
 def get_obj_surrounding(pcd, obj_mask, radius):
     '''
@@ -387,9 +383,9 @@ def load_graspnet_data(rgb_image_path):
     :returns: (depth, rgb, segmap, K)
     """
     
-    depth = np.array(Image.open(rgb_image_path))/1000. # m to mm
-    segmap = np.array(Image.open(rgb_image_path.replace('depth', 'label')))
-    rgb = np.array(Image.open(rgb_image_path.replace('depth', 'rgb')))
+    depth = Image.open(rgb_image_path).array/1000. # m to mm
+    segmap = Image.open(rgb_image_path.replace('depth', 'label')))
+    rgb = Image.open(rgb_image_path.replace('depth', 'rgb')))
 
     # graspnet images are upside down, rotate for inference
     # careful: rotate grasp poses back for evaluation
@@ -444,11 +440,6 @@ def load_contact_grasps(contact_list, data_config):
 
     num_pos_contacts = data_config['labels']['num_pos_contacts']
 
-    batch_pos_contact_points = []
-    batch_pos_contact_dirs = []
-    batch_pos_finger_diffs = []
-    batch_pos_approach_dirs = []
-    batch_pos_grasp_transforms = []
 
     for i,c in enumerate(contact_list): # for each batch
         # embed()
@@ -611,10 +602,10 @@ def compute_labels(gt_dict, obs_pcds, cam_poses, data_config):
     grasp_poses = gt_dict['grasp_poses'] # B x SG x F x 4 x 4
 
     with torch.no_grad():
-        nsample = data_config['k']
+        data_config['k']
         radius = data_config['max_radius']
-        filter_z = data_config['filter_z']
-        z_val = data_config['z_val']
+        data_config['filter_z']
+        data_config['z_val']
         b, N = pos_contact_pts_mesh.shape[0], obs_pcds.shape[1] #data_config['num_points']
         pos_contact_pts_mesh = pos_contact_pts_mesh.reshape(b, -1, 3)
         dir_labels = []
@@ -689,12 +680,12 @@ def compute_labels_single(gt_dict, pcd_list, cam_pose, data_config):
     pos_contact_approaches = gt_dict['approach_dirs'] # B x SG x F x 3
     pos_finger_diffs = gt_dict['offsets'] # B x SG x F
     grasp_poses = gt_dict['grasp_poses'] # B x SG x F x 4 x 4
-    sg, F, N = pos_contact_pts_mesh.shape[0], pos_contact_pts_mesh.shape[1], pcd_list.shape[1]
+    sg, _F, N = pos_contact_pts_mesh.shape[0], pos_contact_pts_mesh.shape[1], pcd_list.shape[1]
     
-    nsample = data_config['k']
+    data_config['k']
     radius = 0.008 #data_config['max_radius']
-    filter_z = data_config['filter_z']
-    z_val = data_config['z_val']
+    data_config['filter_z']
+    data_config['z_val']
     
     with torch.no_grad():
         pos_contact_pts_mesh = pos_contact_pts_mesh.reshape(sg, -1, 3)
@@ -724,7 +715,7 @@ def compute_labels_single(gt_dict, pcd_list, cam_pose, data_config):
                 dir_label = gt_dir[label_i]
                 appr_label = gt_appr[label_i]
                 width_label = gt_width[label_i]
-                pose_label = gt_pose[label_i]
+                gt_pose[label_i]
                 idx_array.append([pcd_i, label_i])
                 dirs[pcd_i] = dir_label
                 approaches[pcd_i] = appr_label
@@ -767,16 +758,15 @@ def compute_labels_aux(gt_dict, obs_pcds, cam_poses, data_config):
     widths = gt_dict['offsets'] # B x SG x F
     poses  = gt_dict['grasp_poses'] # B x SG x F x 4 x 4
     collision_labels = gt_dict['collision_labels'] # B x SG (booleans)
-    b, sg, F, N = contacts.shape[0], contacts.shape[1], contacts.shape[2], obs_pcds.shape[2] #data_config['num_points']
+    _b, sg, _F, N = contacts.shape[0], contacts.shape[1], contacts.shape[2], obs_pcds.shape[2] #data_config['num_points']
     
     # collision_labels = torch.cat([c.expand(1, b) for c in collision_labels], dim=0)
     # collision_labels = collision_labels.T
-    nsample = data_config['k']
+    data_config['k']
     radius = 0.008 #data_config['max_radius']
-    filter_z = data_config['filter_z']
-    z_val = data_config['z_val']
+    data_config['filter_z']
+    data_config['z_val']
 
-    full_poses = []
     full_bases = []
     full_apprs = []
     full_widths = []
@@ -816,7 +806,7 @@ def compute_labels_aux(gt_dict, obs_pcds, cam_poses, data_config):
                     dir_label = gt_dir[label_i]
                     appr_label = gt_appr[label_i]
                     width_label = gt_width[label_i]
-                    pose_label = gt_pose[label_i]
+                    gt_pose[label_i]
                     idx_array.append([pcd_i, label_i])
                     dirs[pcd_i] = dir_label
                     approaches[pcd_i] = appr_label
@@ -1094,7 +1084,7 @@ class PointCloudReader:
         
         pc = self._renderer._to_pointcloud(depth)
 
-        cam_pos = in_camera_pose[:3,3]
+        in_camera_pose[:3,3]
 
         pc = reject_z_outliers(pc)
 

@@ -60,7 +60,7 @@ class SAModule(torch.nn.Module):
         check = copy.deepcopy(pos)
         np.save('pts_check', check.cpu().numpy())
 
-        if sample==True:
+        if sample is True:
             #print('now sampling farthest points for first module')
             idx = fps(pos, batch, ratio=self.ratio)
         else:

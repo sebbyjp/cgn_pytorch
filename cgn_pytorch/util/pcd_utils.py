@@ -1,40 +1,57 @@
+from dataclasses import field
+from typing import dataclass_transform
 import numpy as np
 from scipy.spatial.transform import Rotation as R
+from pydantic import BaseModel
+from mbodios.types.ndarray import array,sz,Float
 
-class Position:
-    def __init__(self):
-        self.x = 0.
-        self.y = 0.
-        self.z = 0.
-
-
-class Orientation:
-    def __init__(self):
-        self.x = 0.
-        self.y = 0.
-        self.z = 0.
-        self.w = 0.
+from pydantic._internal._model_construction import ModelMetaclass
+from pydantic.fields import Field as PydanticField
+from pydantic.fields import PrivateAttr as PydanticPrivateAttr
+from pydantic.fields import ComputedFieldInfo as PydanticComputedFieldInfo
+from dataclasses import field,Field as DataclassField
+from pydantic.fields import FieldInfo as PydanticFieldInfo
+from pydantic.fields import ModelPrivateAttr as PydanticPrivateFieldInfo
 
 
-class Pose:
-    def __init__(self, position, orientation):
-        self.position = position
-        self.orientation = orientation
+@dataclass_transform(
+    kw_only_default=False,
+    field_specifiers=(PydanticField,PydanticPrivateAttr,PydanticComputedFieldInfo,DataclassField,field,PydanticFieldInfo,PydanticPrivateFieldInfo)  
+)
+class ArgsAllowed(ModelMetaclass):...
+class Position(BaseModel,metaclass=ArgsAllowed):
+    x: float
+    y: float
+    z: float
+
+class Orientation(BaseModel,metaclass=ArgsAllowed):
+    x: float
+    y: float
+    z: float
+    w: float
+
+class Pose(BaseModel,metaclass=ArgsAllowed):
+    position: Position
+    orientation: Orientation
+
+class Header(BaseModel,metaclass=ArgsAllowed):
+    frame_id: str
+
+class PoseStamped(BaseModel,metaclass=ArgsAllowed):
+    position: Position
+    orientation: Orientation
+    pose: Pose
+    header: Header
+
+    @classmethod
+    def from_matrix(cls,matrix:"array[sz[4],sz[4],Float]",frame_id:str="world") -> "PoseStamped":
+        quat = R.from_dcm(matrix[-1, :3, :3]).as_quat()
+        trans = matrix[:-1, -1]
+        pose = list(trans) + list(quat)
+        pose = list2pose_stamped(pose, frame_id=frame_id)
+        return pose
 
 
-class Header:
-    def __init__(self):
-        self.frame_id = "world"
-
-
-class PoseStamped():
-    def __init__(self):
-        position = Position()
-        orientation = Orientation()
-        pose = Pose(position, orientation)
-        header = Header()
-        self.pose = pose
-        self.header = header
 
 def pose_from_matrix(matrix, frame_id="world"):
     quat = R.from_dcm(matrix[-1, :3, :3]).as_quat()
@@ -44,13 +61,13 @@ def pose_from_matrix(matrix, frame_id="world"):
     return pose
         
 def list2pose_stamped(pose, frame_id="world"):
-    msg = PoseStamped()
-    msg.header.frame_id = frame_id
-    msg.pose.position.x = pose[0]
-    msg.pose.position.y = pose[1]
-    msg.pose.position.z = pose[2]
-    msg.pose.orientation.x = pose[3]
-    msg.pose.orientation.y = pose[4]
+    msg = PoseStamped(
+        position=Position(*pose[:3]),
+        orientation=Orientation(*pose[3:]),
+        pose=Pose(position=Position(*pose[:3]),orientation=Orientation(*pose[3:])),
+        header=Header(frame_id=frame_id)
+    )
+    return msg
     msg.pose.orientation.z = pose[5]
     msg.pose.orientation.w = pose[6]
     return msg
@@ -97,7 +114,7 @@ def pose_stamped2list(msg):
             float(msg.pose.orientation.w),
             ]
 
-def matrix_from_pose(pose):
+def matrix_from_pose(pose: PoseStamped) -> "array[sz[4],sz[4]]":
     pose_list = pose_stamped2list(pose)
     trans = pose_list[0:3]
     quat = pose_list[3:7]
@@ -109,7 +126,7 @@ def matrix_from_pose(pose):
     T[0:3, 3] = trans
     return T
 
-def farthest_point_downsample(pointcloud, k):
+def farthest_point_downsample(pointcloud: np.ndarray, k: int) -> np.ndarray :
     '''                                                                                                                           
     pointcloud (numpy array): cartesian points, shape (N, 3)                                                                      
     k (int): number of points to sample                                                                                           

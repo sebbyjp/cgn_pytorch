@@ -1,11 +1,7 @@
 import os
 import os.path
-import sys
 import argparse
 import numpy as np
-import math
-import time
-import traceback
 
 import torch
 from cgn_pytorch import CGN as cnkp
@@ -193,7 +189,7 @@ def train(model, optimizer, config, train_loader, val_loader=None, epochs=1, sav
             # save the model
             current_pth = args.save_path + 'current.pth'
             try:
-                file = open(current_pth, 'x')
+                open(current_pth, 'x')
             except:
                 pass
             if save:
